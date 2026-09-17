@@ -1,4 +1,4 @@
-# tayun-fire — Forest Fire Risk Prediction in Mexico
+# Municipal-Scale-Wildfire-Risk-Prediction-System
 
 Academic ML project for estimating daily wildfire ignition probability at the municipality level across Mexico.
 
