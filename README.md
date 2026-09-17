@@ -24,14 +24,51 @@ tayun-fire/
 └── tests/            # Pytest test suite
 ```
 
-## Interactive Map Web Application
+## Setup
 
-An interactive web map built with Flask and Leaflet.js (CartoDB Positron light basemap). Users can select any Mexican state and municipality, query any calendar date up to **today + 15 days**, and view animated predictions with color-coded risk levels.
+### 1. Create and activate a virtual environment
 
 ```bash
-# Launch the interactive web server
-python app.py --debug
+python -m venv venv
+# Windows:
+venv\Scripts\activate
+# Linux / macOS:
+source venv/bin/activate
 ```
+
+### 2. Install dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+### 3. Configure environment variables
+
+```bash
+cp .env.example .env   # Linux/macOS
+copy .env.example .env  # Windows
+```
+
+Open `.env` and set your **CARTO Basemaps API key** (the map works without it using free-tier tiles):
+
+```env
+CARTO_BASEMAP_KEY=your_carto_api_key_here
+```
+
+---
+
+## Interactive Map Web Application
+
+An interactive web map built with Flask and Leaflet.js (CartoDB Voyager basemap). Users can select any Mexican state and municipality, query any calendar date up to **today + 15 days**, and view animated predictions with color-coded risk levels.
+
+```bash
+# Windows — double-click or run from terminal:
+start_map.bat
+
+# Or launch manually:
+python app.py
+```
+
 Open **http://127.0.0.1:5000** in your web browser.
 
 > 📖 **Full Application Documentation**: See [docs/interactive_map.md](docs/interactive_map.md) for architecture, API specifications, and design system tokens.

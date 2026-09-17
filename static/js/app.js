@@ -20,6 +20,7 @@
     cveLayerMap: new Map(), // cvegeo -> Leaflet layer
     municipalitiesList: [], // for search autocomplete
     currentRisks: {}, // active date's { cvegeo: { risk, prob, fires } }
+    cartoKey: "",     // CARTO Basemaps API key — injected at runtime from /api/config
   };
 
   // ── Risk Color Palette (Curated Light Theme) ───────────────────────────────
@@ -123,12 +124,8 @@
 
   L.control.zoom({ position: "topright" }).addTo(map);
 
-  // Modern Light Theme Basemap (CartoDB Positron)
-  L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", {
-    attribution: '&copy; <a href="https://carto.com/">CARTO</a>, &copy; INEGI / CONAFOR',
-    subdomains: "abcd",
-    maxZoom: 19,
-  }).addTo(map);
+  // Basemap tile layer — initialized in init() once /api/config provides the CARTO key
+  // Using CartoDB Voyager; API key loaded from server .env, never hardcoded here.
 
   let geojsonLayer = null;
 
@@ -572,9 +569,20 @@
           const lMed = document.getElementById("legend-range-med");
           const lHigh = document.getElementById("legend-range-high");
           if (lLow) lLow.textContent = `< ${cfg.thresholds.medium_threshold}%`;
-          if (lMed) lMed.textContent = `${cfg.thresholds.medium_threshold}% – ${cfg.thresholds.high_threshold}%`;
-          if (lHigh) lHigh.textContent = `≥ ${cfg.thresholds.high_threshold}%`;
+          if (lMed) lMed.textContent = `${cfg.thresholds.medium_threshold}% \u2013 ${cfg.thresholds.high_threshold}%`;
+          if (lHigh) lHigh.textContent = `\u2265 ${cfg.thresholds.high_threshold}%`;
         }
+
+        // Initialise CARTO basemap tile layer using key from server .env (never hardcoded)
+        state.cartoKey = cfg.carto_key || "";
+        const tileUrl = state.cartoKey
+          ? `https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png?key=${state.cartoKey}`
+          : "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png";
+        L.tileLayer(tileUrl, {
+          attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>, &copy; <a href="https://carto.com/attributions">CARTO</a>, &copy; INEGI / CONAFOR',
+          subdomains: "abcd",
+          maxZoom: 20,
+        }).addTo(map);
       }
     } catch (e) {
       console.warn("Using fallback config:", e);

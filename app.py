@@ -25,6 +25,7 @@ from datetime import date, datetime, timedelta
 
 import numpy as np
 import pandas as pd
+from dotenv import load_dotenv
 from flask import Flask, jsonify, request, send_from_directory
 from flask_cors import CORS
 
@@ -35,6 +36,9 @@ from src.config import (
     WEATHER_DAILY,
     THRESHOLDS,
 )
+
+# Load environment variables from .env (if present) — never commit .env to git
+load_dotenv()
 
 # ── Correct display names for Mexico's 32 states ─────────────────────────────
 _STATE_DISPLAY: dict[str, str] = {
@@ -79,6 +83,9 @@ log = logging.getLogger(__name__)
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 STATIC_DIR = os.path.join(BASE_DIR, "static")
 CACHE_FILE = PROCESSED_DIR / "daily_risk_cache.parquet"
+
+# CARTO Basemaps API key — read from .env, never hardcoded
+CARTO_BASEMAP_KEY = os.environ.get("CARTO_BASEMAP_KEY", "")
 
 app = Flask(__name__, static_folder=STATIC_DIR, static_url_path="/static")
 CORS(app)
@@ -204,6 +211,7 @@ def get_config():
         "thresholds": _get_thresholds(),
         "total_municipalities": len(CVEGEO_INDEX),
         "available_dates_count": len(DATE_RISK_CACHE),
+        "carto_key": CARTO_BASEMAP_KEY,
     })
 
 

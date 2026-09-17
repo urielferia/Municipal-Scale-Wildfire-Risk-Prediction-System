@@ -11,6 +11,18 @@ __pycache__/
 
 # Environment & credentials
 .env
+.env.*
+!.env.example
+
+# IDE / Editor
+.vscode/
+.idea/
+
+# Streamlit (unused)
+.streamlit/
+
+# Antigravity / agents workspace metadata
+.agents/
 
 # Large datasets
 data/raw/
